@@ -24,11 +24,13 @@ Console.WriteLine($"VERSION NON OPTI : {stopwatch.ElapsedMilliseconds} ms.");
 Console.WriteLine("Démarrage version optimisée");
 stopwatch = new Stopwatch();
 stopwatch.Start();
-Parallel.ForEach(images, image =>
+
+var tasks = images.Select(image =>
 {
     Console.WriteLine($"Image : {image.FileName}, Path : {image.FilePath}");
-    imageController.OptimizedConvertImage(image);
-    Console.WriteLine($"Image {image.FileName} convertie.");
+    return imageController.OptimizedConvertImage(image);
 });
+await Task.WhenAll(tasks);
+
 stopwatch.Stop();
 Console.WriteLine($"VERSION OPTI : {stopwatch.ElapsedMilliseconds} ms.");

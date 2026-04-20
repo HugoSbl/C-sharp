@@ -43,7 +43,7 @@ namespace CSharp.Controller
             {
                 using var imageLoaded = await Image.LoadAsync(image.FilePath);
                 imageLoaded.Mutate(x => x.Resize(size.Width, size.Height));
-                await imageLoaded.SaveAsWebpAsync($"/Users/hugo/RiderProjects/CSharp/CSharp/converted/{image.FileName}_{size.Width}.webp");
+                await imageLoaded.SaveAsWebpAsync($"/Users/hugo/RiderProjects/CSharp/CSharp/converted/{image.FileName}_{size.Width}_opti.webp");
             }
         }
         

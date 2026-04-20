@@ -1,27 +1,34 @@
 ﻿using System.Diagnostics;
-Console.WriteLine("Calcul de performance.");
+using CSharp.Controller;
 
-Parallel.For(0, 100, b =>
+var filePath = "/Users/hugo/RiderProjects/CSharp/CSharp/ImagesTest";
+Console.WriteLine($"Récupération des images de {filePath}");
+
+ImageController  imageController = new ImageController();
+var images = imageController.GetImagesInDirectory(filePath);
+Console.WriteLine($"Nombre d'images trouvées : {images.Count}");
+
+Stopwatch stopwatch = new Stopwatch();
+stopwatch.Start();
+Console.WriteLine("Version non opti");
+foreach (var image in images)
 {
-    Console.WriteLine($"tache {b}");
-    var sw = Stopwatch.StartNew();
-// on éxécute 50 millions de calculs
-    double sum = 1;
-    for (int i = 0; i < 500_000_00; i++)
-    {
-//cosinus
-        sum += Math.Sin(i) + Math.Cos(i);
-//Racine carrée
-        sum += Math.Sqrt(i);
-// Exp + Log
-        sum += Math.Exp(i % 10) + Math.Log(i+1);
-//Puissances
-        sum += Math.Pow(i % 100, 3);
-//Multiplication rule
-        sum *= 1.0000001;
-    }
+    
+    Console.WriteLine($"Image : {image.FileName}, Path : {image.FilePath}");
+    imageController.ConvertImage(image);
+    Console.WriteLine($"Image {image.FileName} convertie.");
+}
+stopwatch.Stop();
+Console.WriteLine($"VERSION NON OPTI : {stopwatch.ElapsedMilliseconds} ms.");
 
-    sw.Stop();
-    Console.WriteLine($"Temps de calcul {b}: {sw.ElapsedMilliseconds} ms");
+Console.WriteLine("Démarrage version optimisée");
+stopwatch = new Stopwatch();
+stopwatch.Start();
+Parallel.ForEach(images, image =>
+{
+    Console.WriteLine($"Image : {image.FileName}, Path : {image.FilePath}");
+    imageController.OptimizedConvertImage(image);
+    Console.WriteLine($"Image {image.FileName} convertie.");
 });
-
+stopwatch.Stop();
+Console.WriteLine($"VERSION OPTI : {stopwatch.ElapsedMilliseconds} ms.");
